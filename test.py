@@ -4,7 +4,7 @@ import pandas as pd
 from openpyxl import load_workbook
 import shutil
 
-def process_folder(new_data_folder_path,data_folder_path, output_df, audio_type, data_wb):
+def process_folder(new_data_folder_path,data_folder_path, output_df, audio_type, data_wb,words_df,sens_df):
     audio_prefix = "audio_w" if audio_type == "AUDIO WORD" else "audio_s"
 
     file_count = len([f for f in os.listdir(data_folder_path)])
@@ -13,12 +13,13 @@ def process_folder(new_data_folder_path,data_folder_path, output_df, audio_type,
         if filename.endswith(".mp3") or filename.endswith(".m4a"):
             file_number = filename.split(".")[0]
             file_number = file_number.split("-")[0]
-            new_file_number = int(file_number) + file_count + 20
-            new_filename = f"{audio_prefix}{new_file_number}.wav"
+            new_file_number = int(file_number) + file_count + 30
+            if filename.endswith(".mp3"):
+                new_filename = f"{audio_prefix}{new_file_number}.mp3"
+            else:
+                new_filename = f"{audio_prefix}{new_file_number}.m4a"
 
             # Read data from words.xlsx and sens.xlsx
-            words_df = pd.read_excel(os.path.join('Data Detail', 'AUDIO WORD.xlsx'), header=None)
-            sens_df = pd.read_excel(os.path.join('Data Detail', 'DATA Me Hue 29.2.xlsx'), header=None)
 
             # Get data from respective rows
             if audio_prefix == "audio_s":
@@ -30,7 +31,7 @@ def process_folder(new_data_folder_path,data_folder_path, output_df, audio_type,
 
             # Remove "12.", "13.",... at the beginning of row_3
             row_3 = re.sub(r'^\d+\.', '', row_3.strip())
-
+            row_2 = re.sub(r'^\d+\.', '', row_2.strip())
             # Append data to the output DataFrame
             output_df = pd.concat([output_df, pd.DataFrame({"File": [new_filename], "Mnong Transcript": [row_2], "Transcript": [row_3]})])
             new_file_path = os.path.join(data_folder_path, new_filename)
@@ -49,14 +50,15 @@ def process_folder(new_data_folder_path,data_folder_path, output_df, audio_type,
 
             # Add data to sheet 2 of the Excel file
             sheet1.append([new_filename, row_2, row_3])
-
+            data_wb.save("data.xlsx")
     return output_df
 
 def main():
     new_data_folder = "New Data"
     data_folder = "Data"
     output_df = pd.DataFrame(columns=["File", "Mnong Transcript", "Transcript"])
-
+    words_df = pd.read_excel(os.path.join('Data Detail', 'AUDIO WORD.xlsx'), header=None)
+    sens_df = pd.read_excel(os.path.join('Data Detail', 'DATA Me Hue 29.2.xlsx'), header=None)
     # Load existing Excel workbook
     data_wb_path = "data.xlsx"
     if os.path.exists(data_wb_path):
@@ -67,7 +69,7 @@ def main():
     for subfolder in os.listdir(new_data_folder):
         subfolder_path = os.path.join(new_data_folder, subfolder)
         if os.path.isdir(subfolder_path):
-            output_df = process_folder(subfolder_path,data_folder, output_df, subfolder, data_wb)
+            output_df = process_folder(subfolder_path,data_folder, output_df, subfolder, data_wb,words_df,sens_df)
 
     # Save the result to data.xlsx
     data_wb.save(data_wb_path)
