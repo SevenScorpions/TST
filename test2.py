@@ -18,6 +18,6 @@ def batch_convert_to_wav(input_folder, output_folder):
 # Thay đổi đường dẫn đến thư mục chứa file bạn muốn chuyển đổi
 input_folder = "Data"
 # Thay đổi đường dẫn đến thư mục bạn muốn lưu các file .wav chuyển đổi
-output_folder = "Data"
+output_folder = "Data_Wav"
 
 batch_convert_to_wav(input_folder, output_folder)
