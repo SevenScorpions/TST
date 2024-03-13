@@ -13,6 +13,11 @@ def process_folder(new_data_folder_path,data_folder_path, output_df, audio_type,
         if filename.endswith(".mp3") or filename.endswith(".m4a"):
             file_number = filename.split(".")[0]
             file_number = file_number.split("-")[0]
+
+            if audio_prefix == "audio_s":
+                file_number = file_number.split(" ")[1]
+
+            file_number = file_number.split(" ")[0]
             new_file_number = int(file_number) + file_count + 30
             if filename.endswith(".mp3"):
                 new_filename = f"{audio_prefix}{new_file_number}.mp3"
@@ -23,11 +28,11 @@ def process_folder(new_data_folder_path,data_folder_path, output_df, audio_type,
 
             # Get data from respective rows
             if audio_prefix == "audio_s":
-                row_2 = sens_df.iloc[int(file_number) - 1, 2]
-                row_3 = sens_df.iloc[int(file_number) - 1, 1]
+                row_2 = sens_df.iloc[int(file_number) - 1, 1]
+                row_3 = sens_df.iloc[int(file_number) - 1, 0]
             else:
-                row_2 = words_df.iloc[int(file_number) - 1, 2]
-                row_3 = words_df.iloc[int(file_number) - 1, 1]
+                row_2 = words_df.iloc[int(file_number) - 1, 1]
+                row_3 = words_df.iloc[int(file_number) - 1, 0]
 
             # Remove "12.", "13.",... at the beginning of row_3
             row_3 = re.sub(r'^\d+\.', '', row_3.strip())
@@ -57,8 +62,8 @@ def main():
     new_data_folder = "New Data"
     data_folder = "Data"
     output_df = pd.DataFrame(columns=["File", "Mnong Transcript", "Transcript"])
-    words_df = pd.read_excel(os.path.join('Data Detail', 'AUDIO WORD.xlsx'), header=None)
-    sens_df = pd.read_excel(os.path.join('Data Detail', 'DATA Me Hue 29.2.xlsx'), header=None)
+    words_df = pd.read_excel(os.path.join('Data Detail', 'Viet_MNong_TU VUNG.xlsx'), header=None)
+    sens_df = pd.read_excel(os.path.join('Data Detail', 'Viet_MNong_CAU.xlsx'), header=None)
     # Load existing Excel workbook
     data_wb_path = "data.xlsx"
     if os.path.exists(data_wb_path):
