@@ -14,9 +14,6 @@ def process_folder(new_data_folder_path,data_folder_path, output_df, audio_type,
             file_number = filename.split(".")[0]
             file_number = file_number.split("-")[0]
 
-            if audio_prefix == "audio_s":
-                file_number = file_number.split(" ")[1]
-
             file_number = file_number.split(" ")[0]
             new_file_number = int(file_number) + file_count + 30
             if filename.endswith(".mp3"):
@@ -63,7 +60,7 @@ def main():
     data_folder = "Data"
     output_df = pd.DataFrame(columns=["File", "Mnong Transcript", "Transcript"])
     words_df = pd.read_excel(os.path.join('Data Detail', 'Viet_MNong_TU VUNG.xlsx'), header=None)
-    sens_df = pd.read_excel(os.path.join('Data Detail', 'Viet_MNong_CAU.xlsx'), header=None)
+    sens_df = pd.read_excel(os.path.join('Data Detail', 'Dịch Tiếng Mnông T2.2024 Tuyn (1).xlsx'), header=None)
     # Load existing Excel workbook
     data_wb_path = "data.xlsx"
     if os.path.exists(data_wb_path):
